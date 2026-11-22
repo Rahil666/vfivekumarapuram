@@ -26,7 +26,7 @@ export function SiteHeader() {
       <div className="border-b border-border bg-background">
         <div className="page-container flex h-20 items-center justify-between gap-6">
           <a href="/" aria-label="VFive Homes home">
-            <img src={logo.url} alt="VFive Homes" className="h-14 w-auto" />
+            <img src={logo} alt="VFive Homes" className="h-14 w-auto" />
           </a>
 
           <nav className="hidden items-center gap-7 lg:flex" aria-label="Main">

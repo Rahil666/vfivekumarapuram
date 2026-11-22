@@ -66,7 +66,7 @@ export function Overview() {
           </div>
         </div>
         <img
-          src={building.url}
+          src={building}
           alt="VFIVE Pearl building exterior"
           className="aspect-[3/4] w-full max-w-sm border border-border object-cover md:max-w-none"
           loading="lazy"
@@ -113,7 +113,7 @@ export function WhyPearl() {
       <div className="grid gap-8 md:grid-cols-[252px_1fr]">
         <figure className="self-start">
           <img
-            src={handover.url}
+            src={handover}
             alt="Key handing over at VFIVE Pearl, Kumarapuram"
             className="aspect-square w-full max-w-sm object-cover md:max-w-none"
             loading="lazy"
@@ -211,7 +211,7 @@ export function FloorPlans() {
       <div className="mt-5 grid gap-6 md:grid-cols-[1fr_auto] md:gap-5">
         {tab === "3" ? (
           <img
-            src={floorplan3.url}
+            src={floorplan3}
             alt="3 BHK Type FF 1st floor plan, VFIVE Pearl"
             className="w-full max-w-[535px] border border-foreground/80 bg-background"
             loading="lazy"
@@ -286,8 +286,8 @@ export function LocationMap() {
 }
 
 const PROGRESS = [
-  { label: "September 2024", src: handover.url },
-  { label: "January 2024", src: progressJan.url },
+  { label: "September 2024", src: handover },
+  { label: "January 2024", src: progressJan },
   { label: "October 2023" },
   { label: "March 2023" },
 ];

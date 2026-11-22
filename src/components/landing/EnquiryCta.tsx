@@ -16,7 +16,7 @@ export function EnquiryCta() {
 
   return (
     <section id="enquiry" className="relative isolate overflow-hidden">
-      <img src={hero.url} alt="" aria-hidden className="absolute inset-0 -z-20 h-full w-full object-cover" />
+      <img src={hero} alt="" aria-hidden className="absolute inset-0 -z-20 h-full w-full object-cover" />
       <div className="cta-overlay absolute inset-0 -z-10" />
       <div className="page-container grid items-center gap-10 py-16 md:grid-cols-2 md:py-20 lg:gap-14">
         <div className="text-ink-foreground">
