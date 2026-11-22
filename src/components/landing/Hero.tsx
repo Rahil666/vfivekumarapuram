@@ -1,7 +1,7 @@
 import { FileText, MapPin, PanelsTopLeft, Warehouse } from "lucide-react";
 import type { ReactNode } from "react";
 
-import hero from "/pearl-hero.jpg";
+import hero from "@/assets/pearl-hero.jpg";
 import { Button } from "@/components/ui/button";
 import { STATS } from "@/data/pearl";
 

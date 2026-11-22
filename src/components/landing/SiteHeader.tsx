@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ChevronDown, Mail, Menu, Phone, X } from "lucide-react";
 
-import logo from "/vfive-logo.png";
+import logo from "@/assets/vfive-logo.png";
 import { Button } from "@/components/ui/button";
 import { CONTACT, NAV_LINKS } from "@/data/pearl";
 
