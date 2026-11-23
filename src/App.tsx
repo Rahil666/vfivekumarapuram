@@ -1,5 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
-
 import { EnquiryCta, SiteFooter } from "@/components/landing/EnquiryCta";
 import { Hero } from "@/components/landing/Hero";
 import { SectionNav } from "@/components/landing/SectionNav";
@@ -18,10 +16,7 @@ import {
 } from "@/components/landing/Sections";
 import { SiteHeader } from "@/components/landing/SiteHeader";
 import { FAQS } from "@/data/pearl";
-
-const TITLE = "Ready to Occupy Flats in Kumarapuram, Trivandrum | VFIVE Pearl";
-const DESCRIPTION =
-  "VFIVE Pearl offers ready to occupy 2 and 3 BHK flats in Kumarapuram, Trivandrum, about 1 km from Medical College. K-RERA registered. Book a site visit.";
+import { useEffect } from "react";
 
 const faqSchema = {
   "@context": "https://schema.org",
@@ -33,24 +28,18 @@ const faqSchema = {
   })),
 };
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESCRIPTION },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESCRIPTION },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: TITLE },
-      { name: "twitter:description", content: DESCRIPTION },
-    ],
-    scripts: [{ type: "application/ld+json", children: JSON.stringify(faqSchema) }],
-  }),
-  component: Index,
-});
+export default function App() {
+  useEffect(() => {
+    // Inject FAQ structured data
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.textContent = JSON.stringify(faqSchema);
+    document.head.appendChild(script);
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, []);
 
-function Index() {
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
@@ -78,3 +67,4 @@ function Index() {
     </div>
   );
 }
+

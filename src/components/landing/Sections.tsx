@@ -288,8 +288,8 @@ export function LocationMap() {
 const PROGRESS = [
   { label: "September 2024", src: handover },
   { label: "January 2024", src: progressJan },
-  { label: "October 2023" },
-  { label: "March 2023" },
+  { label: "October 2023",src: progressJan },
+  { label: "March 2023",src: handover },
 ];
 
 export function ProjectProgress() {
