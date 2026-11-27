@@ -6,6 +6,10 @@ export const metadata: Metadata = {
   description:
     "VFIVE Pearl offers ready to occupy 2 and 3 BHK flats in Kumarapuram, Trivandrum, about 1 km from Medical College. K-RERA registered. Book a site visit.",
   authors: [{ name: "VFive Homes" }],
+    icons: {
+    icon: "/projects/pearl/favicon.png",
+  },
+
   openGraph: {
     title: "Ready to Occupy Flats in Kumarapuram, Trivandrum | VFIVE Pearl",
     description:
