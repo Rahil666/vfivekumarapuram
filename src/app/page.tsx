@@ -14,7 +14,7 @@ import {
   WhyKumarapuram,
   WhyPearl,
 } from "@/components/landing/Sections";
-import { SiteHeader } from "@/components/landing/SiteHeader";
+// import { SiteHeader } from "@/components/landing/SiteHeader";
 import { FAQS } from "@/data/pearl";
 
 const faqSchema = {
@@ -35,7 +35,7 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       <div className="min-h-screen bg-background">
-        <SiteHeader />
+        {/* <SiteHeader /> */}
         <main>
           <Hero />
           <div className="page-container grid gap-10 pt-12 md:pt-14 lg:grid-cols-[185px_1fr] lg:gap-12">
