@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api/contact": {
-        target: "https://www.vfivehomes.com",
+        target: "/projects/pearl/api/contact",
         changeOrigin: true,
         secure: true,
         rewrite: () => "/contact.php",

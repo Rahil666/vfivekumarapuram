@@ -21,7 +21,7 @@ export function EnquiryCta() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/contact", {
+      const response = await fetch("/projects/pearl/api/contact", {
         method: "POST",
         body: data,
       });
