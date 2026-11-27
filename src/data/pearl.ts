@@ -4,6 +4,7 @@ export const CONTACT = {
   phoneHref: "tel:+919072666000",
   whatsappHref: "https://wa.me/919072666000",
   email: "sales@vfivehomes.com",
+  enquiryEmail: "rahilramesh830@gmail.com",
 };
 
 export const NAV_LINKS = [

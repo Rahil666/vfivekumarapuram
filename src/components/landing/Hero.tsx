@@ -26,7 +26,7 @@ export function Hero() {
     <>
       <section className="relative isolate overflow-hidden">
         <img
-          src={hero}
+          src={hero.src}
           alt="VFIVE Pearl apartments in Kumarapuram at dusk"
           className="absolute inset-0 -z-20 h-full w-full object-cover"
         />

@@ -1,3 +1,5 @@
+"use client";
+
 import { BadgeCheck, GraduationCap, MapPin, Plane, ShoppingBag, SquarePlus } from "lucide-react";
 import { useState, type ReactNode } from "react";
 
@@ -66,7 +68,7 @@ export function Overview() {
           </div>
         </div>
         <img
-          src={building}
+          src={building.src}
           alt="VFIVE Pearl building exterior"
           className="aspect-[3/4] w-full max-w-sm border border-border object-cover md:max-w-none"
           loading="lazy"
@@ -113,7 +115,7 @@ export function WhyPearl() {
       <div className="grid gap-8 md:grid-cols-[252px_1fr]">
         <figure className="self-start">
           <img
-            src={handover}
+            src={handover.src}
             alt="Key handing over at VFIVE Pearl, Kumarapuram"
             className="aspect-square w-full max-w-sm object-cover md:max-w-none"
             loading="lazy"
@@ -211,7 +213,7 @@ export function FloorPlans() {
       <div className="mt-5 grid gap-6 md:grid-cols-[1fr_auto] md:gap-5">
         {tab === "3" ? (
           <img
-            src={floorplan3}
+            src={floorplan3.src}
             alt="3 BHK Type FF 1st floor plan, VFIVE Pearl"
             className="w-full max-w-[535px] border border-foreground/80 bg-background"
             loading="lazy"
@@ -304,7 +306,7 @@ export function ProjectProgress() {
           <figure key={p.label}>
             {p.src ? (
               <img
-                src={p.src}
+                src={p.src.src}
                 alt={`VFIVE Pearl progress, ${p.label}`}
                 className="aspect-square w-full object-cover"
                 loading="lazy"
