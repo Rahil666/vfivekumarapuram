@@ -1,7 +1,7 @@
 export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
 function escapeHtml(value: string): string {
   return value
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
     const sheetWebhookUrl = process.env.GOOGLE_SCRIPT_WEBHOOK_URL;
     if (sheetWebhookUrl) {
       try {
-        await fetch(sheetWebhookUrl, {
+        const sheetRes = await fetch(sheetWebhookUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -73,8 +73,32 @@ export async function POST(request: NextRequest) {
             interest,
             location: "VFIVE Pearl – Kumarapuram",
             leadFrom: "Kumarapuram Landing Page",
+            ...(process.env.GOOGLE_SCRIPT_SECRET
+              ? { secret: process.env.GOOGLE_SCRIPT_SECRET }
+              : {}),
           }),
         });
+        const sheetText = await sheetRes.text();
+        try {
+          const sheetJson = JSON.parse(sheetText) as {
+            success?: boolean;
+            error?: string;
+          };
+          if (!sheetRes.ok || sheetJson.success === false) {
+            console.warn(
+              "Google Sheet webhook rejected request:",
+              sheetJson.error || sheetText,
+            );
+          }
+        } catch {
+          if (!sheetRes.ok) {
+            console.warn(
+              "Google Sheet webhook returned HTTP",
+              sheetRes.status,
+              sheetText.slice(0, 200),
+            );
+          }
+        }
       } catch (sheetErr: unknown) {
         console.warn(
           "Google Sheet submission failed:",
@@ -83,20 +107,38 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 2. Send Email via Resend (onboarding@resend.dev)
-    if (!process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY_SEC) {
+    // 2. Send Email via Nodemailer
+    const host = process.env.SMTP_HOST;
+    const port = Number(process.env.SMTP_PORT || 465);
+    const user = process.env.SMTP_USER;
+    const pass = process.env.SMTP_PASSWORD || process.env.SMTP_PASS;
+
+    if (!host || !user || !pass) {
       console.error(
-        "Contact API 500: Missing RESEND_API_KEY and RESEND_API_KEY_SEC in environment variables.",
+        "Contact API 500: Missing SMTP_HOST, SMTP_USER, or SMTP_PASSWORD in environment variables.",
       );
       return NextResponse.json(
         {
           success: false,
-          message:
-            "The enquiry email service is not configured. Add RESEND_API_KEY to .env.local and restart the dev server.",
+          message: "The enquiry email service is not configured.",
         },
         { status: 500 },
       );
     }
+
+    const transporter = nodemailer.createTransport({
+      host,
+      port,
+      secure: port === 465, // true for port 465, false for port 587
+      auth: {
+        user,
+        pass,
+      },
+    });
+
+    const recipients = process.env.EMAIL_USER
+      ? process.env.EMAIL_USER.split(",").map((s) => s.trim()).filter(Boolean)
+      : ["winsdigitals@gmail.com", "sales@vfivehomes.com"];
 
     const emailHtml = `
       <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; background: #FDF6EC; padding: 32px; border-radius: 8px; border: 1px solid #C8860A;">
@@ -112,85 +154,26 @@ export async function POST(request: NextRequest) {
       </div>
     `;
 
-    const recipients = process.env.EMAIL_USER
-      ? process.env.EMAIL_USER.split(",").map((s) => s.trim()).filter(Boolean)
-      : ["winsdigitals@gmail.com"];
-
-    const recipientsSec = process.env.EMAIL_USER_SEC
-      ? process.env.EMAIL_USER_SEC.split(",").map((s) => s.trim()).filter(Boolean)
-      : ["aishwaryajune2106@gmail.com"];
-
-    let emailSent = false;
-    let lastEmailError = "";
-
-    if (process.env.RESEND_API_KEY) {
-      try {
-        const resend = new Resend(process.env.RESEND_API_KEY);
-        const { error } = await resend.emails.send({
-          from: "onboarding@resend.dev",
-          to: recipients,
-          replyTo: email || undefined,
-          subject: `New Enquiry – ${name}`,
-          html: emailHtml,
-        });
-        if (error) {
-          lastEmailError = error.message;
-          console.error("First resend failed:", error.message);
-        } else {
-          emailSent = true;
-        }
-      } catch (err: unknown) {
-        lastEmailError = err instanceof Error ? err.message : String(err);
-        console.error("First resend failed:", lastEmailError);
-      }
-    }
-
-    if (process.env.RESEND_API_KEY_SEC) {
-      try {
-        const resend2 = new Resend(process.env.RESEND_API_KEY_SEC);
-        const { error } = await resend2.emails.send({
-          from: "onboarding@resend.dev",
-          to: recipientsSec,
-          replyTo: email || undefined,
-          subject: `New Enquiry – ${name}`,
-          html: emailHtml,
-        });
-        if (error) {
-          lastEmailError = error.message;
-          console.error("Second resend failed:", error.message);
-        } else {
-          emailSent = true;
-        }
-      } catch (err: unknown) {
-        lastEmailError = err instanceof Error ? err.message : String(err);
-        console.error("Second resend failed:", lastEmailError);
-      }
-    }
-
-    if (!emailSent) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: lastEmailError || "Unable to send enquiry. Please try again.",
-        },
-        { status: 500 },
-      );
-    }
+    const info = await transporter.sendMail({
+      from: process.env.SMTP_FROM || `VFIVE Pearl <${user}>`,
+      to: recipients,
+      replyTo: email || undefined,
+      subject: `New Enquiry – ${name}`,
+      html: emailHtml,
+    });
 
     return NextResponse.json({
       success: true,
       message: "Enquiry sent successfully.",
+      messageId: info.messageId,
     });
   } catch (error: unknown) {
-    console.error(
-      "Lead submission error:",
-      error instanceof Error ? error.message : error,
-    );
+    console.error("Failed to send:", error);
     return NextResponse.json(
       {
         success: false,
         message:
-          error instanceof Error ? error.message : "Something went wrong.",
+          error instanceof Error ? error.message : "Failed to send enquiry.",
       },
       { status: 500 },
     );

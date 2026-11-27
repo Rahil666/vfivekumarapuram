@@ -1,5 +1,6 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
 import hero from "@/assets/pearl-hero.jpg";
@@ -8,12 +9,16 @@ import { CONTACT } from "@/data/pearl";
 
 export function EnquiryCta() {
   const [sent, setSent] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (loading) return;
+
     const form = e.currentTarget;
     const data = new FormData(form);
     const name = String(data.get("name") || "").trim();
+    setLoading(true);
 
     try {
       const response = await fetch("/api/contact", {
@@ -39,6 +44,8 @@ export function EnquiryCta() {
       window.alert(
         error instanceof Error ? error.message : "Unable to send your enquiry."
       );
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -139,9 +146,18 @@ export function EnquiryCta() {
               <Button
                 type="submit"
                 variant="pill"
+                disabled={loading}
+                aria-busy={loading}
                 className="h-12 w-full rounded-full text-sm"
               >
-                Book a Site Visit
+                {loading ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" aria-hidden />
+                    Booking…
+                  </>
+                ) : (
+                  "Book a Site Visit"
+                )}
               </Button>
             </form>
           )}
